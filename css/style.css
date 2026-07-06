@@ -1,0 +1,52 @@
+body {
+    font-family: 'Inter', sans-serif;
+}
+
+/* インラインコード（説明文中の単語）のスタイル */
+p code,
+li code {
+    color: hsl(213, 88%, 40%);
+    font-weight: 400;
+    background: #dcf0ff;
+    padding: 0.1rem 0.3rem;
+    border-radius: 0.25rem;
+}
+
+/* コードブロックのスタイル */
+.code-block {
+    background-color: #1e293b;
+    color: #f8fafc;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    overflow-x: auto;
+    font-family: 'Fira Code', monospace;
+}
+
+.hl-keyword {
+    color: #f472b6;
+}
+
+/* pink-400 */
+.hl-var {
+    color: #7dd3fc;
+}
+
+/* sky-300 */
+.hl-op {
+    color: #fbbf24;
+}
+
+/* amber-400 */
+.hl-comment {
+    color: #94a3b8;
+}
+
+/* slate-400 */
+.hl-string {
+    color: #4ade80;
+}
+
+/* green-400 */
+.hl-num {
+    color: #c084fc;
+}

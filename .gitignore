@@ -1,0 +1,9 @@
+.DS_Store
+env.php
+*/.claude/*
+*/uploads/*
+*/vendor/*
+vendor/*
+composer.*
+.env
+.agent
