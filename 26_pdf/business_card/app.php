@@ -87,7 +87,7 @@ $tel = "";
                 </div>
                 <div class="slider-row">
                     <label>位置 X</label>
-                    <input type="range" name="bg_x" id="in_bg_x" min="-200" max="200" value="50" oninput="update()">
+                    <input type="range" name="bg_x" id="in_bg_x" min="-500" max="500" value="50" oninput="update()">
                 </div>
                 <div class="slider-row">
                     <label>位置 Y</label>

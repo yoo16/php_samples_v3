@@ -21,6 +21,12 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     <!-- メイン -->
     <main class="max-w-5xl mx-auto mt-10 px-4">
+        <?php if (isset($_GET['reset'])): ?>
+            <div class="mb-6 p-4 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-700">
+                ✅ DBを初期化しました。
+            </div>
+        <?php endif; ?>
+
         <?php if (count($posts) === 0): ?>
             <div class="p-6 bg-white shadow rounded-lg text-center text-gray-500">
                 まだ投稿はありません。最初の写真をアップロードしてみましょう！

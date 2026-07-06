@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['image'])) {
 
 <body class="bg-gray-100 text-gray-800 min-h-screen flex items-center justify-center p-4">
     <div class="bg-white shadow-lg rounded-xl p-8 max-w-md w-full">
-        <h2 class="text-2xl font-bold mb-6 text-center">🟪 ピクセル風画像ジェネレーター</h2>
+        <h2 class="text-2xl font-bold mb-6 text-center">ピクセル風画像ジェネレーター</h2>
         <form method="post" enctype="multipart/form-data" class="space-y-6">
             <div>
                 <label class="block mb-1 font-medium">画像を選択:</label>

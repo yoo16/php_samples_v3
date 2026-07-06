@@ -144,15 +144,4 @@ $sections = [
             ],
         ]
     ],
-    [
-        'id' => '31_travel_plan',
-        'label' => '簡易旅行プランナー',
-        'public' => true,
-        'files' => [
-            [
-                'name' => 'index.php',
-                'label' => '旅行プラン生成 (Gemini API)'
-            ],
-        ]
-    ],
 ];
