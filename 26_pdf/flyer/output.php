@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 // 1. 設定ファイルの読み込み
 require_once __DIR__ . '/config.php';
 

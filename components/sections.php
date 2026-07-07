@@ -11,10 +11,6 @@ $sections = [
                 'name' => 'env_sample/',
                 'label' => '.env サンプル'
             ],
-            [
-                'name' => 'qrcode/qr_form.php',
-                'label' => 'QRコード生成フォーム'
-            ],
         ]
     ],
     [
@@ -26,6 +22,10 @@ $sections = [
                 'name' => 'index.php',
                 'label' => 'お問い合わせフォーム'
             ],
+            [
+                'name' => 'resend.php',
+                'label' => 'Resend API を使用したメール送信'
+            ]
         ]
     ],
     [
@@ -36,6 +36,10 @@ $sections = [
             [
                 'name' => 'mosic.php',
                 'label' => 'モザイク処理'
+            ],
+            [
+                'name' => 'qrcode/qr_form.php',
+                'label' => 'QRコード生成フォーム'
             ],
         ]
     ],

@@ -21,7 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $targetFile = $uploadDir . $fileName;
 
         $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-        $allowed = ['jpg','jpeg','png','gif'];
+        $allowed = ['jpg', 'jpeg', 'png', 'gif'];
 
         if (in_array($ext, $allowed)) {
             if (move_uploaded_file($_FILES['image']['tmp_name'], $targetFile)) {
@@ -37,7 +37,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($title !== "" || $imagePath !== null) { // タイトル or 画像があれば投稿可能
         $stmt = $pdo->prepare("INSERT INTO notices (title, body, image) VALUES (?, ?, ?)");
         $stmt->execute([$title, $body, $imagePath]);
-        $message = "✅ 投稿が完了しました！";
+        header("Location: index.php");
     } else {
         $message = "⚠️ タイトルか画像のどちらかは必須です。";
     }
@@ -45,11 +45,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 ?>
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <title>投稿フォーム | MyPix</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
+
 <body class="bg-gray-100 font-sans text-gray-800">
     <?php include __DIR__ . "/components/header.php"; ?>
 
@@ -86,4 +88,5 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     <?php include __DIR__ . "/components/footer.php"; ?>
 </body>
+
 </html>

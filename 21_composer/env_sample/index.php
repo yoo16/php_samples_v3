@@ -1,6 +1,6 @@
 <?php
 // Composer のオートローダーを読み込む
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
 // 環境変数を読み込むための Dotenv ライブラリを使用
 use Dotenv\Dotenv;

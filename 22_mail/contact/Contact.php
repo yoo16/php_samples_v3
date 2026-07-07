@@ -1,5 +1,5 @@
 <?php
-require './vendor/autoload.php';
+require __DIR__ . '/../../vendor/autoload.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -7,8 +7,8 @@ use Dotenv\Dotenv;
 
 class Contact
 {
-    private $mailer;
-    private $template = __DIR__ . "/templates/contact_mail.html";
+    private PHPMailer $mailer;
+    private string $template = __DIR__ . "/templates/contact_mail.html";
 
     // 環境変数をクラスメンバで保持
     private string $from_address;
@@ -18,8 +18,7 @@ class Contact
     private string $password;
     private string $encryption;
     private int    $port;
-
-    private string $subject = '[お問い合わせ]ご確認のメール';
+    private string $subject = "";
 
     public function __construct()
     {
@@ -35,6 +34,7 @@ class Contact
         $this->password     = $_ENV['MAIL_PASSWORD'];
         $this->encryption   = $_ENV['MAIL_ENCRYPTION'];
         $this->port         = (int) $_ENV['MAIL_PORT'];
+        $this->subject      = $_ENV['MAIL_SUBJECT'];
 
         $this->setupMailer();
     }
@@ -59,7 +59,7 @@ class Contact
     /**
      * 入力バリデーション
      */
-    public function validate($name, $email, $body)
+    public function validate(string $name, string $email, string $body): string
     {
         if (empty($name) || empty($email) || empty($body)) {
             return "すべてのフィールドを入力してください。";
@@ -73,7 +73,7 @@ class Contact
     /**
      * テンプレートを読み込んで置換
      */
-    private function loadTemplate($values)
+    private function loadTemplate(array $values)
     {
         $template = file_get_contents($this->template);
         foreach ($values as $key => $value) {
@@ -85,7 +85,7 @@ class Contact
     /**
      * メール送信
      */
-    public function send($name, $email, $body)
+    public function send(string $name, string $email, string $body)
     {
         try {
             // HTMLメール作成

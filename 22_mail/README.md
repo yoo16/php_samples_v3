@@ -1,4 +1,3 @@
-## GD
 ## ライブラリインストール
 ### .env
 ```bash
@@ -23,7 +22,7 @@ https://myaccount.google.com/apppasswords
 4.  メールアプリ用の 16桁のアプリパスワード を発行
 5. .env の MAIL_PASSWORD に設定
 
-## OAuth(Google)
+### Resend（クラウドサービス）
 ```bash
-composer require league/oauth2-google
+composer require resend/resend-php
 ```
