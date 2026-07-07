@@ -32,6 +32,11 @@ if (empty($_GET['state']) || ($_GET['state'] !== $_SESSION['oauth2state'])) {
 
         // 3. ユーザー情報取得
         $user = $provider->getResourceOwner($token);
+        $_SESSION['user'] = [
+            'name' => $user->getName(),
+            'email' => $user->getEmail(),
+            'avatar' => $user->getAvatar(),
+        ];
     } catch (\Exception $e) {
         $errorMsg = 'Google認証中にエラーが発生しました: ' . $e->getMessage();
     }
@@ -58,7 +63,7 @@ if (empty($_GET['state']) || ($_GET['state'] !== $_SESSION['oauth2state'])) {
                 </div>
                 <h2 class="text-xl font-bold text-slate-800 mb-2">ログイン失敗</h2>
                 <p class="text-sm text-slate-500 mb-6"><?php echo htmlspecialchars($errorMsg, ENT_QUOTES, 'UTF-8'); ?></p>
-                <a href="/" class="inline-flex w-full justify-center rounded-lg bg-slate-800 px-4 py-2.5 text-sm font-semibold text-white shadow hover:bg-slate-700 transition">
+                <a href="login.php" class="inline-flex w-full justify-center rounded-lg bg-slate-800 px-4 py-2.5 text-sm font-semibold text-white shadow hover:bg-slate-700 transition">
                     トップへ戻る
                 </a>
             </div>
@@ -81,7 +86,7 @@ if (empty($_GET['state']) || ($_GET['state'] !== $_SESSION['oauth2state'])) {
                     </div>
                 </div>
 
-                <a href="/dashboard" class="inline-flex w-full justify-center rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow hover:bg-indigo-500 transition">
+                <a href="dashboard/" class="inline-flex w-full justify-center rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white shadow hover:bg-indigo-500 transition">
                     ダッシュボードへ進む
                 </a>
             </div>
