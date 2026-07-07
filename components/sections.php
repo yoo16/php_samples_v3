@@ -19,11 +19,11 @@ $sections = [
         'public' => true,
         'files' => [
             [
-                'name' => 'index.php',
-                'label' => 'お問い合わせフォーム'
+                'name' => 'gmail/',
+                'label' => 'Gmail お問い合わせフォーム'
             ],
             [
-                'name' => 'resend.php',
+                'name' => 'resend/',
                 'label' => 'Resend API を使用したメール送信'
             ]
         ]
@@ -34,8 +34,8 @@ $sections = [
         'public' => true,
         'files' => [
             [
-                'name' => 'mosic.php',
-                'label' => 'モザイク処理'
+                'name' => 'basic/',
+                'label' => 'リサイズ/モザイク処理'
             ],
             [
                 'name' => 'qrcode/qr_form.php',

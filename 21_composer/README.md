@@ -1,7 +1,20 @@
-## GD
-### php.ini の修正
-```ini
-extension=gd
+## PHPパス設定
+1. php コマンドのパスを環境変数に登録
+
+## Composer インストール
+1. Composer公式サイトのダウンロードページ から Composer-Setup.exe をダウンロード
+2. ダウンロードしたファイルを実行
+3. パスを通した php.exe が正しく選択されていることを確認して進める。
+4. プロキシは、通常の個人環境であれば何も入力せずに「Next」で進める。
+5. 「Install」をクリック
+
+## Composer 確認
+1. VSCode で、このプロジェクトフォルダを開く
+2. ターミナルを開く
+3. composer コマンドで、バージョン確認
+
+```bash
+composer -V
 ```
 
 ## ライブラリインストール
@@ -9,43 +22,3 @@ extension=gd
 ```bash
 composer require vlucas/phpdotenv
 ```
-
-### QRCode
-```bash
-composer require endroid/qr-code
-```
-
-### Parsedown
-```bash
-composer require erusev/parsedown
-```
-
-### PHP Mailer
-```bash
-composer require phpmailer/phpmailer
-```
-
-## Gmail サーバの利用
-- 「安全性の低いアプリの許可」が必要（またはアプリパスワード）
-- Host: smtp.gmail.com
-- Port: 587
-
-1. Google アカウントにのセキュリティにログイン
-2. 2段階認証を有効化
-3. 「アプリパスワード」にアクセス
-https://myaccount.google.com/apppasswords
-4.  メールアプリ用の 16桁のアプリパスワード を発行
-5. .env の MAIL_PASSWORD に設定
-
-## OAuth(Google)
-```bash
-composer require league/oauth2-google
-```
-
-### Google API Console で認証情報を取得
-1. アクセス
-https://console.cloud.google.com/
-
-2. OAuth2 クライアントIDを作成（リダイレクトURIを指定）
-
-3. client_id と client_secret を控えておく
