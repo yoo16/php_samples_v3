@@ -3,9 +3,14 @@ ini_set('display_errors', 0);
 // 1. config.phpを読み込む
 require_once 'config.php';
 
+if (!isset($config)) die("config.phpが読み込まれていません。");
+
 // 2. データの取得
+// POSTで送信されたJSONデータを取得
 $jsonData = $_POST['canvas_data'] ?? '';
+// 出力モードを取得（inline または download）
 $mode = $_POST['mode'] ?? 'inline';
+// JSONデータを配列に変換
 $data = json_decode($jsonData, true);
 
 if (!$data) {
@@ -13,8 +18,11 @@ if (!$data) {
 }
 
 // 3. キャンバスの作成
+// キャンバスのサイズ
 $width = $data['width'] ?? 600;
 $height = $data['height'] ?? 848;
+
+// 空の画像を作成
 $image = imagecreatetruecolor($width, $height);
 
 // 背景を白に
@@ -24,22 +32,26 @@ imagefill($image, 0, 0, $white);
 // 4. オブジェクトの描画
 foreach ($data['objects'] as $obj) {
     if ($obj['type'] === 'i-text' || $obj['type'] === 'text') {
+        // テキスト描画
         drawText($image, $obj, $config);
     } elseif ($obj['type'] === 'image') {
+        // 画像描画
         drawImage($image, $obj);
     }
 }
 
 // 5. 出力
 if ($mode === 'download') {
+    // ダウンロード用のヘッダーを設定
     header('Content-Type: image/png');
     header('Content-Disposition: attachment; filename="flyer.png"');
 } else {
+    // ブラウザで表示する場合のヘッダーを設定
     header('Content-Type: image/png');
 }
 
+// png形式で出力
 imagepng($image);
-imagedestroy($image);
 
 // --- 描画補助関数 ---
 
@@ -83,7 +95,7 @@ function drawImage($image, $obj)
     // データURL(Base64)か通常のURLか判別して読み込み
     $imgData = file_get_contents($src);
     if (!$imgData) return;
-
+    // GDで扱える画像リソースに変換
     $source = imagecreatefromstring($imgData);
     if ($source) {
         $sw = imagesx($source);
@@ -95,6 +107,5 @@ function drawImage($image, $obj)
 
         // 画像の回転が必要な場合は imagerotate が必要ですが、一旦シンプルにコピー
         imagecopyresampled($image, $source, $obj['left'], $obj['top'], 0, 0, $dw, $dh, $sw, $sh);
-        imagedestroy($source);
     }
 }
