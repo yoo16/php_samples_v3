@@ -1,5 +1,5 @@
 <?php
-require '../vendor/autoload.php';
+require_once dirname(__DIR__, 2) . '/bootstrap.php';
 
 use Dompdf\Dompdf;
 use Dompdf\Options;

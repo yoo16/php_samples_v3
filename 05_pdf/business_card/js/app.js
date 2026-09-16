@@ -3,13 +3,27 @@ function previewImage(input) {
         const reader = new FileReader();
         reader.onload = function (e) {
             const base64Data = e.target.result;
-            // プレビューの背景を更新
             document.querySelector('.card').style.backgroundImage = `url('${base64Data}')`;
-            // PDF生成用の隠しフィールドにセット
             document.getElementById('bg_base64').value = base64Data;
         }
         reader.readAsDataURL(input.files[0]);
     }
+}
+
+function setText(selector, value) {
+    document.querySelector(selector).textContent = value;
+}
+
+function setInfo(email, web, tel) {
+    const rows = document.querySelectorAll('.info div');
+    const values = [email, web, tel];
+
+    rows.forEach((row, index) => {
+        const label = row.querySelector('span');
+        row.textContent = '';
+        row.appendChild(label);
+        row.appendChild(document.createTextNode(values[index]));
+    });
 }
 
 function update() {
@@ -27,20 +41,16 @@ function update() {
     const bgX = document.getElementById('in_bg_x').value;
     const bgY = document.getElementById('in_bg_y').value;
 
-    // テキスト反映
-    document.querySelector('.name').innerText = name;
-    document.querySelector('.title').innerText = title;
-    document.querySelector('.info').innerHTML = `Email: ${email}<br>Web: ${web}<br>Tel: ${tel}`;
+    setText('.name', name);
+    setText('.title', title);
+    setInfo(email, web, tel);
 
-    // 色反映
     document.querySelector('.name').style.color = name_color;
     document.querySelector('.title').style.color = title_color;
     document.querySelector('.info').style.color = info_color;
 
-    // 画像反映
     document.querySelector('.card').style.backgroundSize = `${bgZoom}%`;
     document.querySelector('.card').style.backgroundPosition = `${bgX}% ${bgY}%`;
 }
 
-// 読み込み後処理
 document.addEventListener('DOMContentLoaded', update);

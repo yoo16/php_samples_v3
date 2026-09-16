@@ -1,59 +1,105 @@
 @page {
-    /* 91x55mmにサイズを厳密に固定 */
     size: 91mm 55mm;
     margin: 0;
     font-family: noto_sans_jp;
 }
 
+body {
+    margin: 0;
+    padding: 0;
+}
+
 .card {
     font-family: noto_sans_jp;
-
-    /* 91x55mmにサイズを厳密に固定 */
     width: 91mm;
     height: 55mm;
-
-    position: relative;
     overflow: hidden;
-
     box-sizing: border-box;
-    padding: 10mm 7mm;
-
-    background-color: #fff;
-    background-size: 150%;
+    padding: 0;
+    background-color: #f8fafc;
+    background-size: 118%;
     background-position: 50% 50%;
     background-repeat: no-repeat;
-
-    /* テキストの基本設定 */
+    color: #172033;
     line-height: 1.2;
-
-    /* PDFでの意図しない改ページを防止 */
     page-break-inside: avoid;
     display: block;
 }
 
-/* --- 3. テキスト要素のスタイル --- */
-.name {
-    font-size: 18pt;
+.card-table {
+    width: 91mm;
+    height: 54.6mm;
+    border-collapse: collapse;
+    background: rgba(255, 255, 255, 0.84);
+}
+
+.card-accent {
+    width: 4.2mm;
+    background: #0f766e;
+    padding: 0;
+}
+
+.identity {
+    padding: 8.5mm 0 0 4.8mm;
+    vertical-align: top;
+}
+
+.brand-cell {
+    width: 19mm;
+    padding: 7.3mm 7.8mm 0 0;
+    vertical-align: top;
+    text-align: right;
+}
+
+.brand-mark {
+    display: inline-block;
+    width: 10.5mm;
+    height: 10.5mm;
+    border: 0.35mm solid #0f766e;
+    color: #0f766e;
+    font-size: 7pt;
     font-weight: bold;
-    margin-bottom: 1mm;
-    color: #2d3436;
+    line-height: 10mm;
+    text-align: center;
+}
+
+.name {
+    font-size: 17.5pt;
+    font-weight: bold;
+    margin: 0 0 1.3mm;
+    color: #172033;
 }
 
 .title {
-    font-size: 8pt;
-    color: #d63031;
+    font-size: 7.5pt;
+    color: #0f766e;
     font-weight: bold;
-    margin-bottom: 6mm;
+    margin: 0;
+    text-transform: uppercase;
 }
 
 .info {
-    font-size: 8pt;
-    line-height: 1.8;
-    color: #636e72;
+    padding: 0 7.8mm 6.8mm 4.8mm;
+    vertical-align: bottom;
+    font-size: 7.2pt;
+    line-height: 1.7;
+    color: #475569;
 }
 
-/* --- 4. ブラウザ（エディタ）表示時のみの装飾 --- */
+.info div {
+    display: block;
+    border-top: 0.2mm solid rgba(100, 116, 139, 0.28);
+    padding: 1mm 0 0.6mm;
+}
+
+.info span {
+    display: inline-block;
+    width: 13mm;
+    color: #0f766e;
+    font-weight: bold;
+}
+
 .preview-canvas .card {
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 24px 55px rgba(15, 23, 42, 0.2);
     margin: 0 auto;
 }
