@@ -3,6 +3,15 @@ require_once __DIR__ . "/db.php";
 
 $message = "";
 
+// UUID v4 を生成（例: 3f2b8c1e-9a47-4d0b-8e65-1c2a7f4b9d10）
+function uuidv4(): string
+{
+    $b = random_bytes(16);
+    $b[6] = chr((ord($b[6]) & 0x0f) | 0x40); // バージョン 4
+    $b[8] = chr((ord($b[8]) & 0x3f) | 0x80); // バリアント
+    return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($b), 4));
+}
+
 // アップロード用ディレクトリ確認
 $uploadDir = __DIR__ . "/uploads/";
 if (!is_dir($uploadDir)) {
@@ -17,13 +26,14 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $imagePath = null;
 
     if (!empty($_FILES['image']['name'])) {
-        $fileName = time() . "_" . basename($_FILES['image']['name']);
-        $targetFile = $uploadDir . $fileName;
-
-        $ext = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        $ext = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
         $allowed = ['jpg','jpeg','png','gif'];
 
         if (in_array($ext, $allowed)) {
+            // 元のファイル名は使わず、UUID でユニークな名前にする
+            $fileName = uuidv4() . "." . $ext;
+            $targetFile = $uploadDir . $fileName;
+
             if (move_uploaded_file($_FILES['image']['tmp_name'], $targetFile)) {
                 $imagePath = "uploads/" . $fileName;
             } else {
@@ -35,9 +45,12 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     if ($title !== "" || $imagePath !== null) { // タイトル or 画像があれば投稿可能
-        $stmt = $pdo->prepare("INSERT INTO notices (title, body, image) VALUES (?, ?, ?)");
+        $sql = "INSERT INTO notices (title, body, image) VALUES (?, ?, ?)";
+        $stmt = $pdo->prepare($sql);
         $stmt->execute([$title, $body, $imagePath]);
         $message = "✅ 投稿が完了しました！";
+        header("Location: index.php?posted=1");
+        exit;
     } else {
         $message = "⚠️ タイトルか画像のどちらかは必須です。";
     }

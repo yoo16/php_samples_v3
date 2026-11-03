@@ -12,7 +12,8 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // テーブルを削除して再作成
-$pdo->exec("DROP TABLE IF EXISTS notices");
+$sql = "DROP TABLE IF EXISTS notices";
+$pdo->exec($sql);
 createTables();
 
 // アップロード画像を削除
