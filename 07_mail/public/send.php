@@ -1,6 +1,6 @@
 <?php
 session_start();
-require './Contact.php';
+require __DIR__ . '/../src/Contact.php';
 
 $name  = $_POST['name']  ?? '';
 $email = $_POST['email'] ?? '';

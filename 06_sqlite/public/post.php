@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/db.php";
+require_once __DIR__ . "/../src/db.php";
 
 $message = "";
 
@@ -65,7 +65,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     <script src="https://cdn.tailwindcss.com?plugins=line-clamp"></script>
 </head>
 <body class="bg-slate-50 font-sans text-slate-800 antialiased min-h-screen flex flex-col">
-    <?php include __DIR__ . "/components/header.php"; ?>
+    <?php include __DIR__ . "/../src/components/header.php"; ?>
 
     <main class="flex-1 w-full max-w-2xl mx-auto mt-10 px-4">
         <?php if ($message): ?>
@@ -108,6 +108,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         </div>
     </main>
 
-    <?php include __DIR__ . "/components/footer.php"; ?>
+    <?php include __DIR__ . "/../src/components/footer.php"; ?>
 </body>
 </html>

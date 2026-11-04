@@ -1,5 +1,5 @@
 <?php
-$dbFile = __DIR__ . "/mypix.sqlite";
+$dbFile = __DIR__ . "/../data/mypix.sqlite";
 
 // ディレクトリが存在しない場合に作成
 $dir = dirname($dbFile);

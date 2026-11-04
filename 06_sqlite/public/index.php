@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . "/db.php";
+require_once __DIR__ . "/../src/db.php";
 
 // 最新 20 件を取得
 $sql = "SELECT * FROM notices ORDER BY created_at DESC LIMIT 20";
@@ -18,7 +18,7 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </head>
 
 <body class="bg-slate-50 font-sans text-slate-800 antialiased min-h-screen flex flex-col">
-    <?php include __DIR__ . "/components/header.php"; ?>
+    <?php include __DIR__ . "/../src/components/header.php"; ?>
 
     <main class="flex-1 w-full max-w-6xl mx-auto mt-10 px-4">
         <div class="flex items-end justify-between mb-6">
@@ -104,7 +104,7 @@ $posts = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
     </div>
 
-    <?php include __DIR__ . "/components/footer.php"; ?>
+    <?php include __DIR__ . "/../src/components/footer.php"; ?>
 </body>
 
 </html>

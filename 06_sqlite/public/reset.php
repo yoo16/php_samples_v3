@@ -3,7 +3,7 @@
 // reset.php - DB初期化
 // notices テーブルを削除して作り直し、アップロード画像も削除する
 // ============================================================
-require_once __DIR__ . "/db.php";
+require_once __DIR__ . "/../src/db.php";
 
 // GET で開いた場合は誤操作防止のため何もしない
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {

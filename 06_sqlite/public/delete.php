@@ -3,7 +3,7 @@
 // delete.php - 投稿削除（POST のみ）
 // 該当レコードと、紐づくアップロード画像を削除する
 // ============================================================
-require_once __DIR__ . "/db.php";
+require_once __DIR__ . "/../src/db.php";
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: index.php");
