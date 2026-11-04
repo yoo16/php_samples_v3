@@ -61,35 +61,46 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <head>
     <meta charset="UTF-8">
     <title>投稿フォーム | MyPix</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.tailwindcss.com?plugins=line-clamp"></script>
 </head>
-<body class="bg-gray-100 font-sans text-gray-800">
+<body class="bg-slate-50 font-sans text-slate-800 antialiased min-h-screen flex flex-col">
     <?php include __DIR__ . "/components/header.php"; ?>
 
-    <main class="max-w-2xl mx-auto mt-10 px-4">
+    <main class="flex-1 w-full max-w-2xl mx-auto mt-10 px-4">
         <?php if ($message): ?>
-            <div class="mb-6 p-4 rounded-lg <?= str_contains($message, "✅") ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' ?>">
+            <div class="mb-6 px-4 py-3 rounded-xl text-sm border <?= str_contains($message, "✅") ? 'bg-emerald-50 border-emerald-200 text-emerald-700' : 'bg-red-50 border-red-200 text-red-700' ?>">
                 <?= htmlspecialchars($message) ?>
             </div>
         <?php endif; ?>
 
-        <div class="bg-white shadow-lg rounded-lg p-6">
-            <h2 class="text-xl font-semibold mb-4">新規投稿</h2>
-            <form method="post" enctype="multipart/form-data" class="space-y-4">
+        <div class="bg-white border border-slate-200 shadow-sm rounded-2xl p-6 sm:p-8">
+            <h1 class="text-2xl font-bold tracking-tight text-slate-900">新規投稿</h1>
+            <p class="text-sm text-slate-500 mt-1 mb-6">タイトルか画像のどちらかは必須です。</p>
+
+            <form method="post" enctype="multipart/form-data" class="space-y-5">
                 <div>
-                    <label class="block text-sm font-medium mb-1">タイトル</label>
-                    <input type="text" name="title" class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-indigo-400">
+                    <label for="title" class="block text-sm font-medium text-slate-700 mb-1.5">タイトル</label>
+                    <input id="title" type="text" name="title" placeholder="例：夕焼けの海"
+                        class="w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium mb-1">本文</label>
-                    <textarea name="body" rows="4" class="w-full border rounded-lg p-2 focus:ring-2 focus:ring-indigo-400"></textarea>
+                    <label for="body" class="block text-sm font-medium text-slate-700 mb-1.5">本文</label>
+                    <textarea id="body" name="body" rows="4" placeholder="写真についてひとこと"
+                        class="w-full rounded-xl border border-slate-300 bg-white px-4 py-2.5 placeholder-slate-400 focus:outline-none focus:ring-4 focus:ring-indigo-100 focus:border-indigo-500 transition"></textarea>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium mb-1">画像</label>
-                    <input type="file" name="image" accept="image/*" class="block w-full text-sm text-gray-500">
+                    <label class="block text-sm font-medium text-slate-700 mb-1.5">画像</label>
+                    <label for="image" class="flex flex-col items-center justify-center gap-1 px-4 py-8 rounded-xl border-2 border-dashed border-slate-300 bg-slate-50 text-slate-500 hover:border-indigo-400 hover:bg-indigo-50/50 cursor-pointer transition">
+                        <span class="text-3xl">🖼️</span>
+                        <span id="fileName" class="text-sm">クリックして画像を選択（jpg / png / gif）</span>
+                    </label>
+                    <input id="image" type="file" name="image" accept="image/*" class="sr-only"
+                        onchange="document.getElementById('fileName').textContent = this.files[0]?.name ?? 'クリックして画像を選択（jpg / png / gif）'">
                 </div>
-                <div class="text-right">
-                    <button type="submit" class="px-5 py-2 bg-indigo-500 hover:bg-indigo-600 text-white font-medium rounded-lg shadow">
+                <div class="flex items-center justify-end gap-3 pt-2">
+                    <a href="index.php" class="px-4 py-2.5 text-sm font-medium text-slate-500 rounded-full hover:bg-slate-100 transition">キャンセル</a>
+                    <button type="submit" class="px-6 py-2.5 text-sm font-semibold text-white rounded-full bg-indigo-600 hover:bg-indigo-700 shadow-sm hover:shadow-md transition">
                         投稿する
                     </button>
                 </div>

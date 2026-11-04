@@ -1,12 +1,23 @@
-function openModal(imageUrl, title, body) {
-    document.getElementById("modalImage").src = imageUrl;
-    document.getElementById("modalTitle").innerText = title;
-    document.getElementById("modalBody").innerHTML = body;
-    document.getElementById("imageModal").classList.remove("hidden");
-    document.getElementById("imageModal").classList.add("flex");
+function openModal(card) {
+    const d = card.dataset;
+    document.getElementById("modalId").value = d.id;
+    document.getElementById("modalImage").src = d.image;
+    document.getElementById("modalTitle").textContent = d.title;
+    document.getElementById("modalDate").textContent = d.date;
+    document.getElementById("modalBody").textContent = d.body;
+    const modal = document.getElementById("imageModal");
+    modal.classList.remove("hidden");
+    modal.classList.add("flex");
+    document.body.classList.add("overflow-hidden");
 }
 
 function closeModal() {
-    document.getElementById("imageModal").classList.add("hidden");
-    document.getElementById("imageModal").classList.remove("flex");
+    const modal = document.getElementById("imageModal");
+    modal.classList.add("hidden");
+    modal.classList.remove("flex");
+    document.body.classList.remove("overflow-hidden");
 }
+
+document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeModal();
+});
