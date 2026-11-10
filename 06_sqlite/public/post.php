@@ -45,6 +45,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     if ($title !== "" || $imagePath !== null) { // タイトル or 画像があれば投稿可能
+        // 投稿内容を DB に保存
         $sql = "INSERT INTO notices (title, body, image) VALUES (?, ?, ?)";
         $stmt = $pdo->prepare($sql);
         $stmt->execute([$title, $body, $imagePath]);

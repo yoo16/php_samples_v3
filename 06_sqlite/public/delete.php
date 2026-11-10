@@ -5,22 +5,33 @@
 // ============================================================
 require_once __DIR__ . "/../src/db.php";
 
+if ($pdo === null) {
+    header("Location: index.php");
+    exit;
+}
+
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     header("Location: index.php");
     exit;
 }
 
+// POST で送信された id を取得
 $id = filter_var($_POST['id'] ?? null, FILTER_VALIDATE_INT);
 if ($id === false || $id === null) {
     header("Location: index.php");
     exit;
 }
 
-$stmt = $pdo->prepare("SELECT image FROM notices WHERE id = ?");
+// 削除対象のレコードの画像ファイル名を取得
+$sql = "SELECT image FROM notices WHERE id = ?";
+$stmt = $pdo->prepare($sql);
 $stmt->execute([$id]);
+// 画像ファイル名を取得
 $image = $stmt->fetchColumn();
 
-$pdo->prepare("DELETE FROM notices WHERE id = ?")->execute([$id]);
+// レコード削除SQL
+$sql = "DELETE FROM notices WHERE id = ?";
+$pdo->prepare($sql)->execute([$id]);
 
 // 画像ファイルを削除（uploads/ 配下のみ）
 if (is_string($image) && $image !== "") {

@@ -1,100 +1,17 @@
-## PHPでSQLiteを使う
+## アプリの概要
 
-`SQLite` は、ファイル1つで使える軽量な `データベース` です。サーバーの準備が不要なため、学習用の小さなアプリや、設定を増やしたくない場面でよく使われます。
+`PDO` と `SQLite` を利用して、タイトル・本文・画像を投稿して一覧表示する画像投稿サイトを作成します。ブラウザから受けたリクエストを `PHP` ページが処理し、すべてのページが `src/db.php` を経由して `SQLite` にアクセスします。
 
-今回は `PDO` と `SQLite` を利用して、タイトル・本文・画像を投稿して一覧表示する画像投稿サイト「MyPix」を作りながら、データベース操作の基本を学びます。
+| 機能 | ファイル | 内容 | 使う SQL |
+| ---- | ---- | ---- | ---- |
+| 接続・初期化 | src/db.php | DB への接続とテーブル作成 | CREATE TABLE |
+| 一覧表示 | public/index.php | 最新 20 件を新しい順に表示 | SELECT |
+| 投稿 | public/post.php | フォーム入力と画像を保存 | INSERT |
+| 削除 | public/delete.php | 投稿と画像を1件削除 | DELETE |
+| 初期化 | public/reset.php | DB と画像を削除して作り直し | DROP TABLE |
 
-| 区分 | 役割 | 主に使うもの |
-| ---- | ---- | ---- |
-| 接続・初期化 | DB への接続とテーブル作成 | src/db.php、PDO |
-| 一覧表示 | 投稿を新しい順に表示 | public/index.php、SELECT |
-| 投稿 | フォーム入力と画像を保存 | public/post.php、INSERT、uploads |
-| 削除 | 投稿と画像を1件削除 | public/delete.php、DELETE |
-| 初期化 | DB と画像を削除して作り直し | public/reset.php |
+<img src="/storage/teaching_material/php_sqlite_overview.svg" class="" width="">
 
----
-
-## SQLiteとは
-
-### SQLiteの特徴
-
-`SQLite` は、`MySQL` や `PostgreSQL` のようなデータベースサーバーを使わず、**1つのファイルにデータを保存する**データベースです。
-
-| 項目 | SQLite | MySQL / PostgreSQL |
-| ---- | ---- | ---- |
-| サーバー | 不要 | 別プロセスのサーバーが必要 |
-| 接続先 | ファイルパス | ホスト、ポート、ユーザー、パスワード |
-| 向いている用途 | 学習、小規模アプリ、組み込み | 多人数が同時に書き込むサービス |
-| 型 | 緩い（動的型付け） | 厳密 |
-
-> `PHP` からは `new PDO("sqlite:ファイルパス")` と書くだけで接続できます。接続先を変えれば、`PDO` のコードの大部分はそのまま他の DB でも使えます。
-
-### 必要な環境
-
-`PHP` の `pdo_sqlite` 拡張が有効になっている必要があります。
-
-```bash
-php -m | grep -i sqlite
-```
-
-無効の場合は、`php.ini` で有効化します。
-
-```ini
-extension=pdo_sqlite
-extension=sqlite3
-```
-
-> このサンプルは外部ライブラリを使いません。`Composer` のインストールは不要です。
-
-### 実行方法
-
-`PHP` には**開発用の組み込みサーバー**があり、`Apache` や `Nginx` を用意しなくてもページを動かせます。
-
-```bash
-cd 06_sqlite
-php -S localhost:8000 -t public
-```
-
-| 指定 | 内容 |
-| ---- | ---- |
-| php -S | 組み込みサーバーを起動する |
-| localhost:8000 | 待ち受けるホスト名とポート番号 |
-| -t public | ドキュメントルート（公開するフォルダ）を public にする |
-
-起動したら、ブラウザで `http://localhost:8000/` を開きます。`data/mypix.sqlite` が自動で作成されます。サーバーを止めるときは、ターミナルで `Ctrl + C` を押します。
-
-> `-t` と `public` の間は半角スペースです。`-t` を付け忘れると、`public` がルータースクリプトとして扱われ、`Failed opening required 'public'` というエラーになります。
-
-`Apache` を使う場合との違いは次のとおりです。
-
-| 項目 | Apache など | 組み込みサーバー |
-| ---- | ---- | ---- |
-| 準備 | インストールと設定が必要 | PHP だけでよい |
-| 公開フォルダ | DocumentRoot で指定 | `-t` で指定 |
-| 起動・停止 | サービスの起動・停止 | コマンドの実行・`Ctrl + C` |
-| 用途 | 本番、実運用に近い環境 | 学習、開発での動作確認 |
-
-> 組み込みサーバーは開発専用です。本番環境では使わず、`Apache` や `Nginx` を使います。
-
-> `data/mypix.sqlite` と `public/uploads/` は `.gitignore` で Git 管理の対象外にしています。
-
----
-
-## MyPixの全体像
-
-このサンプルでは、次の4つの機能を扱います。
-
-| ファイル | 内容 | 使う SQL |
-| ---- | ---- | ---- |
-| src/db.php | 接続とテーブル作成 | CREATE TABLE |
-| public/index.php | 最新 20 件を表示 | SELECT |
-| public/post.php | 投稿を保存 | INSERT |
-| public/delete.php | 投稿を1件削除 | DELETE |
-| public/reset.php | 全削除して作り直し | DROP TABLE |
-
-<img src="/storage/teaching_material/php_sqlite_overview.svg" class="" width="600">
-
-ブラウザから受けたリクエストを `PHP` ページが処理し、すべてのページが `src/db.php` を経由して `SQLite` にアクセスします。
 
 ### ファイル構成
 
@@ -132,7 +49,291 @@ php -S localhost:8000 -t public
 | src/components | 共通のヘッダーとフッター |
 | data/mypix.sqlite | SQLite 本体（自動生成） |
 
-> **ブラウザから見せる必要があるファイルだけを `public` に置きます。** `db.php` や `mypix.sqlite` を `public` の外に置くことで、URL を直接指定されても中身をダウンロードされません。画像は `public/uploads` にあるため、そのまま表示できます。
+> **ブラウザから見せる必要があるファイルだけを `public` に置きます。** `db.php` や `mypix.sqlite` を `public` の外に置くことで、URL を直接指定されても中身をダウンロードされません。理由は、「公開フォルダを分ける理由」で説明しています。
+
+---
+
+## PHPサーバーとは
+
+### なぜサーバーが必要なのか
+
+`PHP` で作ったページは、HTML ファイルのようにダブルクリックしても動きません。**`PHP` を実行してくれるサーバー**が必要です。
+
+`PHP` のファイルをブラウザで直接開いても、`PHP` のコードはそのまま文字として表示されるだけです。ブラウザは `HTML`、`CSS`、`JavaScript` は理解できますが、`PHP` は理解できません。
+
+`PHP` は**サーバー側で実行**し、その結果の `HTML` だけをブラウザへ返します。
+
+<img src="/storage/teaching_material/php_server_flow.svg" class="" width="">
+
+1. ブラウザが `http://localhost:8000/post.php` のような URL でページを要求する
+2. サーバーが `post.php` を見つけ、`PHP` で実行する
+3. `PHP` が `SQLite` を読み書きして、`HTML` を組み立てる
+4. サーバーが、できあがった `HTML` をブラウザへ返す
+
+| 場所 | 動くもの |
+| ---- | ---- |
+| サーバー側 | PHP、SQLite、ファイルの保存 |
+| ブラウザ側 | HTML の表示、CSS、JavaScript |
+
+> ブラウザには `PHP` のコードは届きません。届くのは実行結果の `HTML` だけです。そのため、`DB` の接続情報などをコードに書いても、ブラウザからは見えません。
+
+### PHPを動かす方法
+
+`PHP` を動かすサーバーには、いくつかの種類があります。
+
+| 方法 | 内容 | 主な用途 |
+| ---- | ---- | ---- |
+| 組み込みサーバー | PHP に最初から入っている。コマンド1つで起動 | 学習、開発 |
+| Apache | 広く使われている Web サーバーに PHP を組み合わせる | 本番、レンタルサーバー |
+| Nginx | 軽量な Web サーバーに PHP を組み合わせる | 本番 |
+| XAMPP など | Apache と DB などをまとめたパッケージ | 学習、開発 |
+
+このサンプルでは、準備がいちばん少ない**組み込みサーバー**を使います。
+
+---
+
+## 組み込みサーバーを使う
+
+`PHP` には**開発用の Web サーバー**が最初から入っています。`Apache` や `Nginx` をインストールしなくても、コマンド1つで `PHP` ページを表示できます。
+
+### 起動する
+
+```bash
+cd 06_sqlite
+php -S localhost:8000 -t public
+```
+
+| 指定 | 内容 |
+| ---- | ---- |
+| php -S | 組み込みサーバーを起動する |
+| localhost:8000 | 待ち受けるホスト名とポート番号 |
+| -t public | ドキュメントルート（公開するフォルダ）を public にする |
+
+起動したら、ブラウザで `http://localhost:8000/` を開きます。サーバーを止めるときは、ターミナルで `Ctrl + C` を押します。
+
+起動中のターミナルは、サーバーが動き続けている状態です。コマンドの入力を受け付けなくなりますが、故障ではありません。
+
+> `-t` と `public` の間は半角スペースです。`-t` を付け忘れると、`public` が**ルータースクリプト**（すべてのリクエストを最初に受け取る `PHP` ファイル）として扱われ、`Failed opening required 'public'` というエラーになります。
+
+### ログを見る
+
+アクセスのたびに、ターミナルへログが表示されます。エラーの確認にも使えます。
+
+```txt
+[Mon Nov 10 23:30:00 2026] 127.0.0.1:52000 [200]: GET /
+[Mon Nov 10 23:30:05 2026] 127.0.0.1:52001 [200]: GET /uploads/3f2b8c1e.jpg
+[Mon Nov 10 23:30:09 2026] 127.0.0.1:52002 [404]: GET /missing.php - No such file or directory
+```
+
+| 部分 | 内容 |
+| ---- | ---- |
+| 127.0.0.1:52000 | アクセス元（自分のパソコン） |
+| [200] | ステータスコード（成功） |
+| GET / | リクエストの種類と、要求された場所 |
+| [404] | ファイルが見つからなかった |
+
+### よくあるエラー
+
+| 症状 | 原因 | 対処 |
+| ---- | ---- | ---- |
+| Failed opening required 'public' | `-t` を付け忘れた | `-t public` と書く |
+| Address already in use | 同じポートを別のプログラムが使用中 | `localhost:8001` のようにポートを変える |
+| 404 Not Found | ドキュメントルートの外、または存在しない URL | フォルダの場所とファイル名を確認する |
+| ページが空白になる | `PHP` の実行時エラー | ターミナルのログを確認する |
+
+### Apacheなどとの違い
+
+| 項目 | Apache など | 組み込みサーバー |
+| ---- | ---- | ---- |
+| 準備 | インストールと設定が必要 | PHP だけでよい |
+| 公開フォルダ | DocumentRoot で指定 | `-t` で指定 |
+| 起動・停止 | サービスの起動・停止 | コマンドの実行・`Ctrl + C` |
+| 同時処理 | 多数のアクセスを並行処理 | 基本的に1件ずつ処理 |
+| 用途 | 本番、実運用に近い環境 | 学習、開発での動作確認 |
+
+> 組み込みサーバーは開発専用です。性能とセキュリティの面で本番に向かないため、本番環境では `Apache` や `Nginx` を使います。
+
+---
+
+## ドキュメントルートとURL
+
+**ドキュメントルート**とは、URL の `/` に対応するフォルダのことです。ブラウザからは、このフォルダの**中にあるファイルだけ**が URL で指定できます。
+
+`-t public` で起動したときの、URL とファイルの対応は次のとおりです。
+
+| URL | 実際のファイル |
+| ---- | ---- |
+| http://localhost:8000/ | public/index.php |
+| http://localhost:8000/post.php | public/post.php |
+| http://localhost:8000/js/modal.js | public/js/modal.js |
+| http://localhost:8000/uploads/3f2b8c1e.jpg | public/uploads/3f2b8c1e.jpg |
+| http://localhost:8000/src/db.php | **存在しない**（404） |
+| http://localhost:8000/data/mypix.sqlite | **存在しない**（404） |
+
+`public` の外にある `src` や `data` は、URL でたどり着く道がありません。ブラウザから見えないのは、隠しているのではなく、**公開範囲の外に置いているから**です。
+
+---
+
+## 公開フォルダを分ける理由
+
+### 公開しないものがある
+
+このアプリには、ブラウザに見せるべきでないファイルがあります。
+
+| ファイル | 見せてはいけない理由 |
+| ---- | ---- |
+| data/mypix.sqlite | 全投稿のデータそのもの。ダウンロードされると中身がすべて読まれる |
+| src/db.php | DB の場所や接続の仕組みなど、内部の作りが分かる |
+| src/components | 画面の部品であり、単体で開かれる想定がない |
+| .git / .gitignore | 開発の履歴や設定が含まれる |
+
+### 公開フォルダをプロジェクト全体にすると
+
+試しに、`-t` を `public` ではなく**プロジェクト全体**にして起動するとどうなるかを考えます。
+
+```bash
+cd 06_sqlite
+php -S localhost:8000 -t .
+```
+
+| URL | 結果 |
+| ---- | ---- |
+| http://localhost:8000/data/mypix.sqlite | **DB ファイルがそのままダウンロードされる** |
+| http://localhost:8000/src/db.php | 単体で実行され、エラーや内部情報が表示される |
+| http://localhost:8000/.gitignore | 設定ファイルの中身が表示される |
+
+ブラウザで URL を入力するだけで、投稿データが丸ごと持ち出せてしまいます。`SQLite` は**ファイル1つがデータベース**であるため、ファイルを公開することは、データベースを公開することと同じです。
+
+> 実際に試す場合は、自分のパソコン内だけで行います。ダウンロードした DB は `sqlite3` コマンドで開くと、投稿の中身が読めることを確認できます。確認が終わったら、必ず `-t public` に戻します。
+
+### public に分ける考え方
+
+そこで、フォルダを役割ごとに分けます。
+
+<img src="/storage/teaching_material/php_public_src_data.svg" class="" width="">
+
+| フォルダ | 置くもの | ブラウザから |
+| ---- | ---- | ---- |
+| public | 入口となる PHP、JavaScript、画像（uploads） | 直接アクセスできる |
+| src | DB 接続や共通部品など、PHP から読み込むプログラム | アクセスできない |
+| data | SQLite 本体 | アクセスできない |
+
+`PHP` の `require_once` は、**サーバー内のファイルを直接読みに行く**命令です。URL を経由しないため、`public` の外にあるファイルも問題なく読み込めます。
+
+```php
+// public/index.php
+require_once __DIR__ . "/../src/db.php";
+```
+
+| 処理 | 内容 |
+| ---- | ---- |
+| __DIR__ | この `index.php` があるフォルダ（public） |
+| /../ | 1つ上のフォルダ（06_sqlite）へ戻る |
+| src/db.php | public の外にあるファイルを読み込む |
+
+つまり、**ブラウザには入口（`public`）だけを見せ、中身（`src`、`data`）は `PHP` だけが読む**という分担になります。
+
+### uploads は public に置く
+
+アップロードされた画像は、`<img src="uploads/xxx.jpg">` のように、ブラウザが直接取りに来ます。そのため、`uploads` は `public` の中に置きます。
+
+| 保存先 | 画像の表示 | 向いている場合 |
+| ---- | ---- | ---- |
+| public/uploads | URL でそのまま表示できる | 誰に見せてもよい画像（このサンプル） |
+| public の外 | PHP で読み出して返す処理が必要 | 本人にだけ見せたい画像 |
+
+> `public/uploads` に置いた画像は、URL を知っていれば誰でも見られます。ファイル名を `UUID` にしているのは、URL を推測されにくくする効果もあります。ただし、秘密の画像を守る方法ではないため、見せる相手を限る画像は `public` の外に置きます。
+
+### 公開フォルダに置いてはいけないもの
+
+`public` に置くと誰でも取得できます。次のようなものは置きません。
+
+| 置かないもの | 理由 |
+| ---- | ---- |
+| データベースファイル | 全データが持ち出される |
+| パスワードや API キーを書いた設定ファイル | 秘密情報が読まれる |
+| バックアップ（`.bak`、`.zip`、`.sql`） | 中身が丸ごと取得される |
+| `.git` フォルダ | ソースコードと履歴が復元される |
+
+---
+
+### 本番環境での考え方
+
+本番で `Apache` や `Nginx` を使う場合も、考え方は同じです。**公開フォルダを `public` に向けます。** 設定の名前だけが異なります。
+
+#### Apache
+
+```txt
+<VirtualHost *:80>
+    ServerName mypix.example.com
+    DocumentRoot /var/www/06_sqlite/public
+</VirtualHost>
+```
+
+#### Nginx
+
+```txt
+server {
+    listen 80;
+    server_name mypix.example.com;
+    root /var/www/06_sqlite/public;
+    index index.php;
+
+    location / {
+        try_files $uri $uri/ =404;
+    }
+
+    location ~ \.php$ {
+        include fastcgi_params;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_pass unix:/run/php/php8.3-fpm.sock;
+    }
+}
+```
+
+| 開発 | Apache | Nginx |
+| ---- | ---- | ---- |
+| php -S ... -t public | DocumentRoot を public に設定 | root を public に設定 |
+
+> `Nginx` は `PHP` を自分では実行できないため、`php-fpm`（`PHP` を実行する別のプロセス）に処理を渡す設定（`fastcgi_pass`）が必要です。`fastcgi_pass` の接続先やパスは、環境（OS、`PHP` のバージョン）によって異なります。
+
+> 共有レンタルサーバーなどで `public` を指定できない場合は、`data` に `.htaccess` で `Require all denied` を書くなどして、直接のアクセスを拒否します。ただし、**最初から公開範囲の外に置く方が確実**です。
+
+---
+
+## SQLiteとは
+
+### SQLiteの特徴
+
+`SQLite` は、ファイル1つで使える軽量な `データベース` です。サーバーの準備が不要なため、学習用の小さなアプリや、設定を増やしたくない場面でよく使われます。
+
+`SQLite` は、`MySQL` や `PostgreSQL` のようなデータベースサーバーを使わず、**1つのファイルにデータを保存する**データベースです。
+
+| 項目 | SQLite | MySQL / PostgreSQL |
+| ---- | ---- | ---- |
+| サーバー | 不要 | 別プロセスのサーバーが必要 |
+| 接続先 | ファイルパス | ホスト、ポート、ユーザー、パスワード |
+| 向いている用途 | 学習、小規模アプリ、組み込み | 多人数が同時に書き込むサービス |
+| 型 | 緩い（動的型付け） | 厳密 |
+
+> `PHP` からは `new PDO("sqlite:ファイルパス")` と書くだけで接続できます。接続先を変えれば、`PDO` のコードの大部分はそのまま他の DB でも使えます。
+
+### 必要な環境
+
+`PHP` の `pdo_sqlite` 拡張が有効になっている必要があります。
+
+```bash
+php -m | grep -i sqlite
+```
+
+無効の場合は、`php.ini` で有効化します。
+
+```ini
+extension=pdo_sqlite
+extension=sqlite3
+```
+
+> `data/mypix.sqlite` と `public/uploads/` は `.gitignore` で Git 管理の対象外にする必要があります。
 
 ---
 
@@ -140,7 +341,7 @@ php -S localhost:8000 -t public
 
 `src/db.php` は、各ページから `require_once` で読み込まれ、`$pdo` を使える状態にします。
 
-<img src="/storage/teaching_material/php_sqlite_db_connect_flow.svg" class="" width="700">
+<img src="/storage/teaching_material/php_sqlite_db_connect_flow.svg" class="" width="">
 
 処理の流れは次のとおりです。
 
@@ -226,7 +427,7 @@ function createTables()
 
 `public/index.php` は、`notices` から最新の投稿を取り出して、カード形式で表示します。
 
-<img src="/storage/teaching_material/php_sqlite_list_flow.svg" class="" width="700">
+<img src="/storage/teaching_material/php_sqlite_list_flow.svg" class="" width="">
 
 処理の流れは次のとおりです。
 
@@ -287,7 +488,7 @@ function openModal(imageUrl, title, body) {
 
 `public/post.php` は、フォームの表示と、`POST` されたときの登録処理を1つのファイルで行います。
 
-<img src="/storage/teaching_material/php_sqlite_post_flow.svg" class="" width="700">
+<img src="/storage/teaching_material/php_sqlite_post_flow.svg" class="" width="">
 
 処理の流れは次のとおりです。
 
@@ -346,7 +547,44 @@ function uuidv4(): string
 
 > `UUID` は、世界中でほぼ重複しない ID を作るための標準形式です。`Composer` の `ramsey/uuid` を使うと `Uuid::uuid4()` の1行で生成できますが、この章は外部ライブラリなしで動かすため自作しています。
 
-> 画像を送るフォームには、`enctype="multipart/form-data"` が必須です。
+### multipart/form-data とは
+
+`HTML` のフォームは、`enctype` を省略すると `application/x-www-form-urlencoded` で送信されます。この形式では、ファイルを選んでも**ファイル名の文字列しか送られず、中身は届きません。** 画像を送るフォームには、`enctype="multipart/form-data"` を指定します。
+
+| 送り方 | 画像の受け取り方 | 補足 |
+| ---- | ---- | ---- |
+| form の enctype に multipart/form-data | `$_FILES` | このサンプルの方法 |
+| JavaScript の `fetch` + `FormData` | `$_FILES` | `enctype` の記述は不要。ブラウザが自動で multipart にする |
+| JavaScript で画像をそのまま body に入れる | `php://input` | `$_FILES` は空。自分で保存処理を書く |
+| Base64 文字列にして JSON で送る | `json_decode` | 容量が約 1.3 倍になる |
+
+つまり、`HTML` のフォームから `$_FILES` で受け取る場合に `enctype` が必要で、`JavaScript` で送るなら `FormData` が同じ役割を果たします。
+
+```javascript
+const formData = new FormData();
+formData.append("title", "タイトル");
+formData.append("image", fileInput.files[0]);
+fetch("post.php", { method: "POST", body: formData });
+```
+
+> `fetch` で `FormData` を送るとき、`Content-Type` ヘッダーを自分で書いてはいけません。境界を表す `boundary` が抜けて、`PHP` が解析できなくなります。
+
+### multipart 受信の注意点
+
+`multipart/form-data` は、`PHP` が本体を解析してから `$_POST` と `$_FILES` に振り分けます。アップロードを受け付けると、次の点に注意が必要です。
+
+| 項目 | 内容 | 対策 |
+| ---- | ---- | ---- |
+| 巨大なリクエスト | 大きな本体や大量のパートで、サーバーの CPU やメモリ、ディスクを消費させられる（過去には `PHP` の multipart 解析そのものの脆弱性で、CPU を使い切る DoS が報告された） | `PHP` を最新版に保つ。`post_max_size`、`upload_max_filesize`、`max_file_uploads` を必要最小限にする |
+| サイズ超過の無言の失敗 | `post_max_size` を超えると、`$_POST` と `$_FILES` が**空になり、エラーも出ない** | `$_SERVER['CONTENT_LENGTH']` と `$_FILES['image']['error']` を確認する |
+| クライアントが決める値 | `$_FILES['image']['name']` と `type` は偽装できる | 名前は使わず、中身を `getimagesize` などで確認する |
+| 一時ファイルが残る | 処理を中断しても一時ファイルが作られる | `move_uploaded_file` で保存するか、終了時に消えることを前提にする |
+
+```bash
+php -r 'echo ini_get("upload_max_filesize"), " ", ini_get("post_max_size"), "\n";'
+```
+
+> このサンプルは、`post_max_size`（初期値 8M）を超えた場合や `$_FILES['image']['error']` の確認をしていません。大きな画像を送ると、何も起きずに投稿が失敗したように見えます。
 
 ### プレースホルダで登録する
 
@@ -477,59 +715,6 @@ exit;
 
 ---
 
-## 動作確認
-
-1. `http://localhost:8000/` を開き、「まだ投稿はありません」と表示されることを確認する
-2. `data/mypix.sqlite` が自動で作成されていることを確認する
-3. タイトルのみ、画像のみ、両方で投稿する
-4. 投稿後に一覧へ移動し、再読み込みしても二重登録されないことを確認する
-5. タイトルも画像も無い投稿が拒否されることを確認する
-6. `.txt` など許可外のファイルが拒否されることを確認する
-7. 新しい投稿が先頭に並ぶことを確認する
-8. 投稿の「削除」で、その投稿と画像だけが消えることを確認する
-9. 「DB初期化」で投稿と画像が消えることを確認する
-
-`SQLite` の中身は、コマンドでも確認できます。
-
-```bash
-sqlite3 data/mypix.sqlite
-```
-
-```sql
-.schema notices
-SELECT id, title, image, created_at FROM notices;
-.quit
-```
-
-### 演習
-
-| 番号 | 内容 |
-| ---- | ---- |
-| 1 | LIMIT を 6 に変えて、表示件数の変化を確認 |
-| 2 | 古い順に表示するよう ORDER BY を変更 |
-| 3 | title が NOT NULL なのに、題名なしで画像だけ登録できる理由を考察 |
-| 4 | 表示時刻が 9 時間ずれる原因と直し方を考案 |
-| 5 | author 列を追加し、フォームと一覧に反映 |
-| 6 | delete.php の処理を読み、画像を先に消さず SELECT を先にする理由を考察 |
-| 7 | LIMIT と OFFSET でページネーションを実装 |
-
-> 演習 3 のヒントは、`NULL` と空文字 `""` の違いです。演習 5 の列追加には `ALTER TABLE notices ADD COLUMN author TEXT;` を使います。
-
-### 改善ポイント
-
-教材としては動作しますが、実運用では次の課題があります。
-
-| 箇所 | 問題 | 対策 |
-| ---- | ---- | ---- |
-| 拡張子のみのチェック | 拡張子を偽装したファイルを通せる | 中身を検証（getimagesize など） |
-| onclick への値の埋め込み | HTML 用のエスケープでは JS として不十分 | data 属性や json_encode を利用 |
-| 画像サイズの上限なし | 大きなファイルで容量を圧迫 | サイズの上限を確認 |
-| reset.php が認証なし | 誰でも全削除できる | 認証を付ける、または削除 |
-| 権限 0777 | 権限が広すぎる | 0755 などに絞る |
-| delete.php が認証なし | 誰でも投稿を削除できる | 認証を付ける |
-
----
-
 ## まとめ
 
 | 項目 | 内容 |
@@ -545,6 +730,9 @@ SELECT id, title, image, created_at FROM notices;
 | fetchAll | 取得結果をすべて配列で受け取るメソッド |
 | htmlspecialchars | HTML 出力時のエスケープ関数（XSS 対策） |
 | uploads | 画像ファイルの保存先（DB にはパスだけ保存） |
-| php -S ... -t public | 組み込みサーバーの起動（public を公開） |
+| PHP サーバー | PHP を実行して、結果の HTML を返すサーバー |
+| php -S ... -t public | 組み込みサーバーの起動（開発専用、public を公開） |
+| ドキュメントルート | URL の / に対応する、公開するフォルダ |
+| require_once / __DIR__ | URL を経由せず、public の外のファイルを読み込む |
 | public / src / data | 公開するファイルと、公開しないファイルの分離 |
 | PRG パターン | POST 後にリダイレクトして二重送信を防ぐ手法 |
