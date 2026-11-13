@@ -7,8 +7,8 @@ use Dotenv\Dotenv;
 
 class Contact
 {
-    private $mailer;
-    private $template = __DIR__ . "/templates/contact_mail.html";
+    private PHPMailer $mailer;
+    private string $template = __DIR__ . "/templates/contact_mail.html";
 
     // 環境変数をクラスメンバで保持
     private string $from_address;
@@ -75,6 +75,7 @@ class Contact
      */
     private function loadTemplate($values)
     {
+        if (!$values) return;
         $template = file_get_contents($this->template);
         foreach ($values as $key => $value) {
             $template = str_replace("{{{$key}}}", $value, $template);

@@ -22,8 +22,3 @@ https://myaccount.google.com/security
 https://myaccount.google.com/apppasswords
 4.  メールアプリ用の 16桁のアプリパスワード を発行
 5. .env の MAIL_PASSWORD に設定
-
-## OAuth(Google)
-```bash
-composer require league/oauth2-google
-```
